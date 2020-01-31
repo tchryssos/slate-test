@@ -27,8 +27,8 @@ const useStyles = createUseStyles({
 	},
 	formattingButton: {
 		cursor: 'pointer',
-		height: 28,
-		width: 28,
+		minHeight: 28,
+		minWidth: 28,
 		padding: 0,
 		textAlign: 'center',
 		marginRight: 4,
@@ -161,25 +161,6 @@ const toggleCodeBlock = (editor) => () =>  {
 }
 // END - EDITOR - END
 
-// START - KEY COMMANDS - START
-const keyCommands = (editor) => (e) => {
-	if (!e.ctrlKey) {
-		return
-	}
-	e.preventDefault()
-	switch (e.key) {
-		case '`':
-			toggleCodeBlock(editor)()
-			break
-		case 'b':
-			toggleBoldMark(editor)()
-			break
-		default:
-			break
-	}
-}
-// END - KEY COMMANDS - END
-
 // START - FORMATTING BUTTONS - START
 const FormattingButton = ({
 	label, onClick, classes, labelClassName,
@@ -237,12 +218,15 @@ export default () => {
 						labelClassName={classes.codeKey}
 						classes={classes}
 					/>
+					<FormattingButton
+						label="link"
+						classes={classes}
+					/>
 				</div>
 				<div className={classes.textArea}>
 					<Editable
 						renderElement={renderElement}
 						renderLeaf={renderLeaf}
-						onKeyDown={keyCommands(editor)}
 					/>
 				</div>
 			</div>
