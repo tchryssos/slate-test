@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { BrowserRouter, Route, Switch, withRouter } from 'react-router-dom'
-import Home from 'pages/Home'
+import Editor from 'pages/Editor'
 import globalUseStyles from 'constants/styles/globalUseStyles'
 
 const App = ({ location }) => {
@@ -11,7 +11,7 @@ const App = ({ location }) => {
 	return (
 		<>
 			<Switch>
-				<Route path="/" exact component={Home} />
+				<Route path="/" exact component={Editor} />
 			</Switch>
 			{/* NavBar?? */}
 		</>
