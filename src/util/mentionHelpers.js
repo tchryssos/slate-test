@@ -1,7 +1,7 @@
 import { Transforms } from 'slate'
 
-export const insertMention = (editor, pMention) => {
-	const mention = { type: 'mention', pMention, children: [{ text: '' }] }
-	Transforms.insertNodes(editor, mention)
+export const insertMention = (editor, mention) => {
+	const mentionObj = { type: 'mention', mention, children: [{ text: '' }] }
+	Transforms.insertNodes(editor, mentionObj)
 	Transforms.move(editor)
 }

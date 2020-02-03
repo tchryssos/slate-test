@@ -72,7 +72,6 @@ export default ({
 		e.preventDefault()
 		Transforms.select(editor, mentionTarget)
 		insertMention(editor, mentionList[index])
-		console.log(mentionList, index)
 		setMentionTarget(null)
 	}
 	if (mentionTarget && mentionList.length > 0) {
