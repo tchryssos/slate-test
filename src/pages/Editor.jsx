@@ -16,6 +16,7 @@ import CodeElement from 'components/CodeElement'
 import LinkElement from 'components/LinkElement'
 import TextElement from 'components/TextElement'
 import FormattingButton from 'components/FormattingButton'
+import MentionElement from 'components/MentionElement'
 
 const useStyles = createUseStyles({
 	editorWrapper: {
@@ -44,19 +45,42 @@ const useStyles = createUseStyles({
 	},
 })
 
-const renderElement = (props) => {
-	const { element } = props
+const renderElement = ({
+	attributes, children, element,
+}) => {
 	switch (element.type) {
-		case 'code':
-			return <CodeElement {...props} />
 		case 'link':
-			return <LinkElement {...props} />
+			return (
+				<LinkElement
+					attributes={attributes}
+					element={element}
+				>
+					{children}
+				</LinkElement>
+			)
+		case 'mention':
+			return (
+				<MentionElement
+					attributes={attributes}
+					element={element}
+				>
+					{children}
+				</MentionElement>
+			)
 		default:
-			return <TextElement {...props} />
+			return (
+				<TextElement attributes={attributes}>
+					{children}
+				</TextElement>
+			)
 	}
 }
 
-const renderLeaf = (props) => <Leaf {...props} />
+const renderLeaf = ({ children, attributes, leaf }) => (
+	<Leaf leaf={leaf} attributes={attributes}>
+		{children}
+	</Leaf>
+)
 
 export default () => {
 	// START - DEFINITIONS - START
@@ -77,11 +101,6 @@ export default () => {
 						onClick={toggleBoldMark(editor)}
 						label="B"
 						labelClassName={classes.boldKey}
-					/>
-					<FormattingButton
-						onClick={toggleCodeBlock(editor)}
-						label="</>"
-						labelClassName={classes.codeKey}
 					/>
 					<FormattingButton
 						label="link"
