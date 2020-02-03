@@ -1,8 +1,9 @@
 import React, {
 	useMemo, useState, useEffect, useRef,
+	useCallback,
 } from 'react'
 import { createUseStyles } from 'react-jss'
-import { createEditor } from 'slate'
+import { createEditor, Transforms } from 'slate'
 import {
 	Slate, Editable, withReact, ReactEditor,
 } from 'slate-react'
@@ -11,6 +12,7 @@ import { withHistory } from 'slate-history'
 import { makeLink } from 'util/linkHelpers'
 import { withEditorMods, editorOnChange } from 'util/editorHelpers'
 import { toggleBoldMark } from 'util/boldHelpers'
+import { insertMention } from 'util/mentionHelpers'
 import fakeData from 'constants/fakeData'
 import mentions from 'constants/mentions'
 
@@ -112,6 +114,41 @@ export default () => {
 		}
 	}, [mentionList.length, editor, mentionIndex, search, mentionTarget])
 
+	const onKeyDown = useCallback(
+		(event) => {
+			if (mentionTarget) {
+				switch (event.key) {
+					case 'ArrowDown': {
+						event.preventDefault()
+						const prevIndex = mentionIndex >= mentionList.length - 1 ? 0 : mentionIndex + 1
+						setMentionIndex(prevIndex)
+						break
+					}
+					case 'ArrowUp': {
+						event.preventDefault()
+						const nextIndex = mentionIndex <= 0 ? mentionList.length - 1 : mentionIndex - 1
+						setMentionIndex(nextIndex)
+						break
+					}
+					case 'Tab':
+					case 'Enter':
+						event.preventDefault()
+						Transforms.select(editor, mentionTarget)
+						insertMention(editor, mentionList[mentionIndex])
+						setMentionTarget(null)
+						break
+					case 'Escape':
+						event.preventDefault()
+						setMentionTarget(null)
+						break
+					default:
+						break
+				}
+			}
+		},
+		[mentionIndex, search, mentionTarget],
+	)
+
 	return (
 		<Slate
 			editor={editor}
@@ -134,6 +171,7 @@ export default () => {
 					<Editable
 						renderElement={renderElement}
 						renderLeaf={renderLeaf}
+						onKeyDown={onKeyDown}
 					/>
 				</div>
 				<MentionPortal
