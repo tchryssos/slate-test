@@ -98,7 +98,7 @@ export default () => {
 	// Set the mention list to be the first 10 matches
 	// in the list of potential mentions that start with the typed handle (thus far)
 	const mentionList = mentions.filter(
-		(c) => (c).toLowerCase().startsWith(search.toLowerCase()),
+		(potentialMention) => (potentialMention).toLowerCase().startsWith(search.toLowerCase()),
 	).slice(0, 10)
 
 	useEffect(() => {
