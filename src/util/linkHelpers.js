@@ -60,8 +60,14 @@ export const withLinks = (editor) => {
 	return editor
 }
 
-export const insertLink = (editor, url) => {
+const insertLink = (editor, url) => {
 	if (editor.selection) {
 		wrapLink(editor, url)
 	}
+}
+
+export const makeLink = (editor) => () => {
+	const url = window.prompt('Enter the URL of the link:')
+	if (!url) return
+	insertLink(editor, url)
 }

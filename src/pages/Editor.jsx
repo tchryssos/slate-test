@@ -1,20 +1,21 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import {
-	createEditor, Editor, Transforms, Text,
-} from 'slate'
+import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
-import { withLinks, isLinkActive, insertLink } from 'util/linkHelpers'
+import { withLinks, makeLink } from 'util/linkHelpers'
+import { toggleBoldMark } from 'util/boldHelpers'
+import { toggleCodeBlock } from 'util/codeHelpers'
+import fakeData from 'constants/fakeData'
+import mentions from 'constants/mentions'
 
 import Leaf from 'components/Leaf'
 import CodeElement from 'components/CodeElement'
 import LinkElement from 'components/LinkElement'
 import TextElement from 'components/TextElement'
 import FormattingButton from 'components/FormattingButton'
-import fakeData from 'constants/fakeData'
 
 const useStyles = createUseStyles({
 	editorWrapper: {
@@ -42,49 +43,6 @@ const useStyles = createUseStyles({
 		fontFamily: 'monospace',
 	},
 })
-
-// START - EDITOR - START
-const isBoldMarkActive = (editor) => () => {
-	const [match] = Editor.nodes(editor, {
-		match: (n) => n.bold === true,
-		universal: true,
-	})
-
-	return !!match
-}
-
-const isCodeBlockActive = (editor) => () => {
-	const [match] = Editor.nodes(editor, {
-		match: (n) => n.type === 'code',
-	})
-
-	return !!match
-}
-
-const toggleBoldMark = (editor) => () => {
-	const isActive = isBoldMarkActive(editor)()
-	Transforms.setNodes(
-		editor,
-		{ bold: isActive ? null : true },
-		{ match: (n) => Text.isText(n), split: true },
-	)
-}
-
-const toggleCodeBlock = (editor) => () => {
-	const isActive = isCodeBlockActive(editor)()
-	Transforms.setNodes(
-		editor,
-		{ type: isActive ? 'paragraph' : 'code' },
-		{ match: (n) => Editor.isBlock(editor, n) },
-	)
-}
-
-const makeLink = (editor) => () => {
-	const url = window.prompt('Enter the URL of the link:')
-	if (!url) return
-	insertLink(editor, url)
-}
-// END - EDITOR - END
 
 export default () => {
 	// START - DEFINITIONS - START
