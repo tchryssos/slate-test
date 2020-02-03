@@ -5,10 +5,10 @@ const useStyles = createUseStyles({
 
 })
 
-export default ({ attributes, children, url }) => {
+export default ({ attributes, children, element }) => {
 	const classes = useStyles()
 	return (
-		<a {...attributes} href={url}>
+		<a {...attributes} href={element.url}>
 			{children}
 		</a>
 	)

@@ -74,7 +74,7 @@ const toggleCodeBlock = (editor) => () => {
 	const isActive = isCodeBlockActive(editor)()
 	Transforms.setNodes(
 		editor,
-		{ type: isActive ? null : 'code' },
+		{ type: isActive ? 'paragraph' : 'code' },
 		{ match: (n) => Editor.isBlock(editor, n) },
 	)
 }
@@ -97,6 +97,7 @@ export default () => {
 	// START - ELEMENT RENDER - START
 	const renderElement = useCallback((props) => {
 		const { element } = props
+		console.log(props)
 		switch (element.type) {
 			case 'code':
 				return <CodeElement {...props} />
