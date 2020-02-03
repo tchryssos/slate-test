@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 
-import { createEditor, Editor, Range } from 'slate'
+import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
 import { makeLink } from 'util/linkHelpers'
-import { withEditorMods } from 'util/editorHelpers'
+import { withEditorMods, editorOnChange } from 'util/editorHelpers'
 import { toggleBoldMark } from 'util/boldHelpers'
 import fakeData from 'constants/fakeData'
 import mentions from 'constants/mentions'
@@ -93,47 +93,7 @@ export default () => {
 		<Slate
 			editor={editor}
 			value={value}
-			onChange={newValue => {
-				setValue(newValue)
-				const { selection } = editor
-
-				if (selection && Range.isCollapsed(selection)) {
-					// Get the cursor position
-					const [start] = Range.edges(selection)
-					// Get the starting position of the word before the cursor
-					const wordBefore = Editor.before(editor, start, { unit: 'word' })
-					// Get the cursor position preceeding the word from above
-					const before = wordBefore && Editor.before(editor, wordBefore)
-					// Capture a range of positions starting with the beginning of the
-					// already captured word, and ending at our cursor position
-					const beforeRange = before && Editor.range(editor, before, start)
-					// Capture the actual string content of the above positions
-					const beforeText = beforeRange && Editor.string(editor, beforeRange)
-					// Check if the text above matches the pattern '@{any letters}
-					// If yes, return the full text, the text after the @
-					const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/)
-
-					// Get the position after the cursor
-					const after = Editor.after(editor, start)
-					// Get the range of positions from cursor to immediately after cursor
-					const afterRange = Editor.range(editor, start, after)
-					// Get the actual text content of that range
-					const afterText = Editor.string(editor, afterRange)
-					// Check if the text above is a whitespace character
-					const afterMatch = afterText.match(/^(\s|$)/)
-
-					// if you're typing to search for someone by an @ lookup
-					// set search parameters and dropdown target
-					if (beforeMatch && afterMatch) {
-						setTarget(beforeRange)
-						setSearch(beforeMatch[1])
-						setIndex(0)
-						return
-					}
-				}
-
-				setTarget(null)
-			}}
+			onChange={editorOnChange(editor, setValue, setTarget, setSearch, setIndex)}
 		>
 			<div className={classes.editorWrapper}>
 				<div className={classes.toolBar}>
