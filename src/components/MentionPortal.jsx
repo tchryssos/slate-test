@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import clsx from 'clsx'
 import { createUseStyles } from 'react-jss'
 import { Transforms } from 'slate'
-import map from 'ramda/src/map'
 
 import { insertMention } from 'util/mentionHelpers'
 
@@ -36,13 +35,13 @@ const Portal = ({ children }) => (
 )
 
 const MentionItem = ({
-	mention, i, mentionIndex, onClick, classes,
+	mention, index, mentionIndex, onClick, classes,
 }) => (
 	<div
-		onClick={onClick(i)}
+		onMouseDown={onClick(index)} // Can't use onClick inside React Portal
 		className={clsx(
 			classes.mentionItem,
-			{ [classes.activeItem]: i === mentionIndex },
+			{ [classes.activeItem]: index === mentionIndex },
 		)}
 	>
 		{mention}
@@ -51,17 +50,17 @@ const MentionItem = ({
 
 const MentionList = ({
 	mentionList, mentionIndex, itemOnClick, classes,
-}) => map(
+}) => mentionList.map(
 	(mention, i) => (
 		<MentionItem
 			key={mention}
 			mention={mention}
-			i={i}
+			index={i}
 			classes={classes}
 			mentionIndex={mentionIndex}
 			onClick={itemOnClick}
 		/>
-	), mentionList,
+	),
 )
 
 export default ({
@@ -73,6 +72,7 @@ export default ({
 		e.preventDefault()
 		Transforms.select(editor, mentionTarget)
 		insertMention(editor, mentionList[index])
+		console.log(mentionList, index)
 		setMentionTarget(null)
 	}
 	if (mentionTarget && mentionList.length > 0) {
