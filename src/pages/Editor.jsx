@@ -90,31 +90,34 @@ export default () => {
 	const portalRef = useRef()
 	const classes = useStyles()
 	const [value, setValue] = useState(fakeData)
-	const [target, setTarget] = useState()
+	const [mentionTarget, setMentionTarget] = useState()
 	const [mentionIndex, setMentionIndex] = useState(0)
 	const [search, setSearch] = useState('')
 	const editor = useMemo(() => withEditorMods(withHistory(withReact(createEditor()))), [])
 
-	// 
+	// Set the mention list to be the first 10 matches
+	// in the list of potential mentions that start with the typed handle (thus far)
 	const mentionList = mentions.filter(
 		(c) => (c).toLowerCase().startsWith(search.toLowerCase()),
 	).slice(0, 10)
 
 	useEffect(() => {
-		if (target && mentionList.length > 0) {
+		// If there's a target for the mention dropdown, and there are potential mention matches...
+		if (mentionTarget && mentionList.length > 0) {
 			const el = portalRef.current
-			const domRange = ReactEditor.toDOMRange(editor, target)
+			const domRange = ReactEditor.toDOMRange(editor, mentionTarget)
 			const rect = domRange.getBoundingClientRect()
+			// Set the dropdown location to under the in progress mention
 			el.style.top = `${rect.top + window.pageYOffset + 24}px`
 			el.style.left = `${rect.left + window.pageXOffset}px`
 		}
-	}, [mentionList.length, editor, mentionIndex, search, target])
+	}, [mentionList.length, editor, mentionIndex, search, mentionTarget])
 
 	return (
 		<Slate
 			editor={editor}
 			value={value}
-			onChange={editorOnChange(editor, setValue, setTarget, setSearch, setMentionIndex)}
+			onChange={editorOnChange(editor, setValue, setMentionTarget, setSearch, setMentionIndex)}
 		>
 			<div className={classes.editorWrapper}>
 				<div className={classes.toolBar}>
@@ -135,7 +138,7 @@ export default () => {
 					/>
 				</div>
 				<MentionPortal
-					target={target}
+					mentionTarget={mentionTarget}
 					portalRef={portalRef}
 					mentionList={mentionList}
 					mentionIndex

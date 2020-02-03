@@ -42,7 +42,7 @@ export const withEditorMods = (editor) => {
 }
 
 export const editorOnChange = (
-	editor, setValue, setTarget, setSearch, setMentionIndex,
+	editor, setValue, setMentionTarget, setSearch, setMentionIndex,
 ) => (newValue) => {
 	setValue(newValue)
 	const { selection } = editor
@@ -76,12 +76,12 @@ export const editorOnChange = (
 		// if you're typing to search for someone by an @ lookup
 		// set search parameters and dropdown target
 		if (beforeMatch && afterMatch) {
-			setTarget(beforeRange)
+			setMentionTarget(beforeRange)
 			setSearch(beforeMatch[1])
 			setMentionIndex(0)
 			return
 		}
 	}
 
-	setTarget(null)
+	setMentionTarget(null)
 }

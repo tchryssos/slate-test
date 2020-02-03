@@ -10,9 +10,9 @@ const Portal = ({ children }) => (
 	ReactDOM.createPortal(children, document.body)
 )
 
-export default ({ target, mentionList, portalRef, mentionIndex }) => {
+export default ({ mentionTarget, mentionList, portalRef, mentionIndex }) => {
 	const classes = useStyles()
-	if (target && mentionList.length > 0) {
+	if (mentionTarget && mentionList.length > 0) {
 		return (
 			<Portal>
 				<div
