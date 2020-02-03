@@ -1,6 +1,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { useSelected, useFocused } from 'slate-react'
+import prop from 'ramda/src/prop'
 
 const useStyles = createUseStyles({
 	mention: {
@@ -26,7 +27,7 @@ export default ({ attributes, children, element }) => {
 			contentEditable={false}
 		>
 			@
-			{element.mention}
+			{prop('mention', element)}
 			{children}
 		</span>
 	)

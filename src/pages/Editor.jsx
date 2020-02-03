@@ -5,7 +5,8 @@ import { createEditor } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
 
-import { withLinks, makeLink } from 'util/linkHelpers'
+import { makeLink } from 'util/linkHelpers'
+import { withEditorMods } from 'util/editorHelpers'
 import { toggleBoldMark } from 'util/boldHelpers'
 import fakeData from 'constants/fakeData'
 import mentions from 'constants/mentions'
@@ -84,7 +85,7 @@ export default () => {
 	// START - DEFINITIONS - START
 	const classes = useStyles()
 	const [value, setValue] = useState(fakeData)
-	const editor = useMemo(() => withLinks(withHistory(withReact(createEditor()))), [])
+	const editor = useMemo(() => withEditorMods(withHistory(withReact(createEditor()))), [])
 	// END - DEFINITIONS - END
 
 	return (

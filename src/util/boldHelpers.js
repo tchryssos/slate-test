@@ -1,8 +1,11 @@
 import { Editor, Transforms, Text } from 'slate'
+import prop from 'ramda/src/prop'
+
+const isNodeBold = (node) => prop('bold', node) === true
 
 const isBoldMarkActive = (editor) => () => {
 	const [match] = Editor.nodes(editor, {
-		match: (n) => n.bold === true,
+		match: isNodeBold,
 		universal: true,
 	})
 

@@ -1,14 +1,15 @@
 import { Transforms, Editor, Range } from 'slate'
-import isUrl from 'is-url'
+import prop from 'ramda/src/prop'
 
+const isNodeLink = (node) => prop('type', node) === 'link'
 
 export const isLinkActive = (editor) => {
-	const [link] = Editor.nodes(editor, { match: (n) => n.type === 'link' })
+	const [link] = Editor.nodes(editor, { match: isNodeLink })
 	return !!link
 }
 
 const unwrapLink = (editor) => {
-	Transforms.unwrapNodes(editor, { match: (n) => n.type === 'link' })
+	Transforms.unwrapNodes(editor, { match: isNodeLink })
 }
 
 export const wrapLink = (editor, url) => {
@@ -30,34 +31,6 @@ export const wrapLink = (editor, url) => {
 		Transforms.wrapNodes(editor, link, { split: true })
 		Transforms.collapse(editor, { edge: 'end' })
 	}
-}
-
-export const withLinks = (editor) => {
-	const { insertData, insertText, isInline } = editor
-
-	editor.isInline = (element) => (
-		element.type === 'link' ? true : isInline(element)
-	)
-
-	editor.insertText = (text) => {
-		if (text && isUrl(text)) {
-			wrapLink(editor, text)
-		} else {
-			insertText(text)
-		}
-	}
-
-	editor.insertData = (data) => {
-		const text = data.getData('text/plain')
-
-		if (text && isUrl(text)) {
-			wrapLink(editor, text)
-		} else {
-			insertData(data)
-		}
-	}
-
-	return editor
 }
 
 const insertLink = (editor, url) => {

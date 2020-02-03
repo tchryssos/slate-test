@@ -16,7 +16,9 @@ const useStyles = createUseStyles({
 	},
 })
 
-export default ({ label, onClick, disabled, labelClassName }) => {
+export default ({
+	label, onClick, disabled, labelClassName,
+}) => {
 	const classes = useStyles()
 	return (
 		<button
