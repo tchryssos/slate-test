@@ -42,7 +42,7 @@ export const withEditorMods = (editor) => {
 }
 
 export const editorOnChange = (
-	editor, setValue, setTarget, setSearch, setIndex,
+	editor, setValue, setTarget, setSearch, setMentionIndex,
 ) => (newValue) => {
 	setValue(newValue)
 	const { selection } = editor
@@ -78,7 +78,7 @@ export const editorOnChange = (
 		if (beforeMatch && afterMatch) {
 			setTarget(beforeRange)
 			setSearch(beforeMatch[1])
-			setIndex(0)
+			setMentionIndex(0)
 			return
 		}
 	}

@@ -1,8 +1,12 @@
-import React, { useMemo, useState } from 'react'
+import React, {
+	useMemo, useState, useEffect, useRef,
+} from 'react'
 import { createUseStyles } from 'react-jss'
 
 import { createEditor } from 'slate'
-import { Slate, Editable, withReact } from 'slate-react'
+import {
+	Slate, Editable, withReact, ReactEditor,
+} from 'slate-react'
 import { withHistory } from 'slate-history'
 
 import { makeLink } from 'util/linkHelpers'
@@ -16,6 +20,7 @@ import LinkElement from 'components/LinkElement'
 import TextElement from 'components/TextElement'
 import FormattingButton from 'components/FormattingButton'
 import MentionElement from 'components/MentionElement'
+import MentionPortal from 'components/MentionPortal'
 
 const useStyles = createUseStyles({
 	editorWrapper: {
@@ -82,18 +87,33 @@ const renderLeaf = ({ children, attributes, leaf }) => (
 )
 
 export default () => {
+	const portalRef = useRef()
 	const classes = useStyles()
 	const [value, setValue] = useState(fakeData)
 	const [target, setTarget] = useState()
-	const [index, setIndex] = useState(0)
+	const [mentionIndex, setMentionIndex] = useState(0)
 	const [search, setSearch] = useState('')
 	const editor = useMemo(() => withEditorMods(withHistory(withReact(createEditor()))), [])
+
+	const chars = mentions.filter(
+		(c) => (c).toLowerCase().startsWith(search.toLowerCase()),
+	).slice(0, 10)
+
+	useEffect(() => {
+		if (target && chars.length > 0) {
+			const el = portalRef.current
+			const domRange = ReactEditor.toDOMRange(editor, target)
+			const rect = domRange.getBoundingClientRect()
+			el.style.top = `${rect.top + window.pageYOffset + 24}px`
+			el.style.left = `${rect.left + window.pageXOffset}px`
+		}
+	}, [chars.length, editor, mentionIndex, search, target])
 
 	return (
 		<Slate
 			editor={editor}
 			value={value}
-			onChange={editorOnChange(editor, setValue, setTarget, setSearch, setIndex)}
+			onChange={editorOnChange(editor, setValue, setTarget, setSearch, setMentionIndex)}
 		>
 			<div className={classes.editorWrapper}>
 				<div className={classes.toolBar}>
@@ -113,6 +133,12 @@ export default () => {
 						renderLeaf={renderLeaf}
 					/>
 				</div>
+				<MentionPortal
+					target={target}
+					portalRef={portalRef}
+					chars={chars}
+					mentionIndex
+				/>
 			</div>
 		</Slate>
 	)
