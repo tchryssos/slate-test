@@ -90,14 +90,12 @@ export default () => {
 	// START - DEFINITIONS - START
 	const classes = useStyles()
 	const [value, setValue] = useState(fakeData)
-	console.log(value)
 	const editor = useMemo(() => withLinks(withHistory(withReact(createEditor()))), [])
 	// END - DEFINITIONS - END
 
 	// START - ELEMENT RENDER - START
 	const renderElement = useCallback((props) => {
 		const { element } = props
-		console.log(props)
 		switch (element.type) {
 			case 'code':
 				return <CodeElement {...props} />
