@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 
 import { createEditor } from 'slate'
@@ -44,27 +44,26 @@ const useStyles = createUseStyles({
 	},
 })
 
+const renderElement = (props) => {
+	const { element } = props
+	switch (element.type) {
+		case 'code':
+			return <CodeElement {...props} />
+		case 'link':
+			return <LinkElement {...props} />
+		default:
+			return <TextElement {...props} />
+	}
+}
+
+const renderLeaf = (props) => <Leaf {...props} />
+
 export default () => {
 	// START - DEFINITIONS - START
 	const classes = useStyles()
 	const [value, setValue] = useState(fakeData)
 	const editor = useMemo(() => withLinks(withHistory(withReact(createEditor()))), [])
 	// END - DEFINITIONS - END
-
-	// START - ELEMENT RENDER - START
-	const renderElement = useCallback((props) => {
-		const { element } = props
-		switch (element.type) {
-			case 'code':
-				return <CodeElement {...props} />
-			case 'link':
-				return <LinkElement {...props} />
-			default:
-				return <TextElement {...props} />
-		}
-	}, [])
-	const renderLeaf = useCallback((props) => <Leaf {...props} />, [])
-	// END - ELEMENT RENDER - END
 
 	return (
 		<Slate
