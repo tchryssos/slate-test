@@ -2,7 +2,6 @@ import React, {
 	useMemo, useState, useEffect, useRef,
 } from 'react'
 import { createUseStyles } from 'react-jss'
-
 import { createEditor } from 'slate'
 import {
 	Slate, Editable, withReact, ReactEditor,
@@ -139,9 +138,11 @@ export default () => {
 				</div>
 				<MentionPortal
 					mentionTarget={mentionTarget}
-					portalRef={portalRef}
 					mentionList={mentionList}
-					mentionIndex
+					portalRef={portalRef}
+					mentionIndex={mentionIndex}
+					editor={editor}
+					setMentionTarget={setMentionTarget}
 				/>
 			</div>
 		</Slate>

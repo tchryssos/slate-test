@@ -2,7 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import clsx from 'clsx'
 import { createUseStyles } from 'react-jss'
+import { Transforms } from 'slate'
 import map from 'ramda/src/map'
+
+import { insertMention } from 'util/mentionHelpers'
 
 const useStyles = createUseStyles({
 	portal: {
@@ -18,6 +21,10 @@ const useStyles = createUseStyles({
 	mentionItem: {
 		padding: '1px 3px',
 		borderRadius: '3px',
+		cursor: 'pointer',
+		'&:hover': {
+			backgroundColor: '#B4D5FF',
+		},
 	},
 	activeItem: {
 		backgroundColor: '#B4D5FF',
@@ -28,8 +35,11 @@ const Portal = ({ children }) => (
 	ReactDOM.createPortal(children, document.body)
 )
 
-const MentionItem = ({ mention, i, mentionIndex, classes }) => (
+const MentionItem = ({
+	mention, i, mentionIndex, onClick, classes,
+}) => (
 	<div
+		onClick={onClick(i)}
 		className={clsx(
 			classes.mentionItem,
 			{ [classes.activeItem]: i === mentionIndex },
@@ -39,7 +49,9 @@ const MentionItem = ({ mention, i, mentionIndex, classes }) => (
 	</div>
 )
 
-const MentionList = ({ mentionList, mentionIndex, classes }) => map(
+const MentionList = ({
+	mentionList, mentionIndex, itemOnClick, classes,
+}) => map(
 	(mention, i) => (
 		<MentionItem
 			key={mention}
@@ -47,14 +59,22 @@ const MentionList = ({ mentionList, mentionIndex, classes }) => map(
 			i={i}
 			classes={classes}
 			mentionIndex={mentionIndex}
+			onClick={itemOnClick}
 		/>
 	), mentionList,
 )
 
 export default ({
 	mentionTarget, mentionList, portalRef, mentionIndex,
+	editor, setMentionTarget,
 }) => {
 	const classes = useStyles()
+	const itemOnClick = (index) => (e) => {
+		e.preventDefault()
+		Transforms.select(editor, mentionTarget)
+		insertMention(editor, mentionList[index])
+		setMentionTarget(null)
+	}
 	if (mentionTarget && mentionList.length > 0) {
 		return (
 			<Portal>
@@ -63,6 +83,7 @@ export default ({
 						mentionList={mentionList}
 						classes={classes}
 						mentionIndex={mentionIndex}
+						itemOnClick={itemOnClick}
 					/>
 				</div>
 			</Portal>
