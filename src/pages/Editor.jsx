@@ -95,19 +95,20 @@ export default () => {
 	const [search, setSearch] = useState('')
 	const editor = useMemo(() => withEditorMods(withHistory(withReact(createEditor()))), [])
 
-	const chars = mentions.filter(
+	// 
+	const mentionList = mentions.filter(
 		(c) => (c).toLowerCase().startsWith(search.toLowerCase()),
 	).slice(0, 10)
 
 	useEffect(() => {
-		if (target && chars.length > 0) {
+		if (target && mentionList.length > 0) {
 			const el = portalRef.current
 			const domRange = ReactEditor.toDOMRange(editor, target)
 			const rect = domRange.getBoundingClientRect()
 			el.style.top = `${rect.top + window.pageYOffset + 24}px`
 			el.style.left = `${rect.left + window.pageXOffset}px`
 		}
-	}, [chars.length, editor, mentionIndex, search, target])
+	}, [mentionList.length, editor, mentionIndex, search, target])
 
 	return (
 		<Slate
@@ -136,7 +137,7 @@ export default () => {
 				<MentionPortal
 					target={target}
 					portalRef={portalRef}
-					chars={chars}
+					mentionList={mentionList}
 					mentionIndex
 				/>
 			</div>

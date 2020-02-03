@@ -10,9 +10,9 @@ const Portal = ({ children }) => (
 	ReactDOM.createPortal(children, document.body)
 )
 
-export default ({ target, chars, portalRef, mentionIndex }) => {
+export default ({ target, mentionList, portalRef, mentionIndex }) => {
 	const classes = useStyles()
-	if (target && chars.length > 0) {
+	if (target && mentionList.length > 0) {
 		return (
 			<Portal>
 				<div
@@ -28,7 +28,7 @@ export default ({ target, chars, portalRef, mentionIndex }) => {
 						boxShadow: '0 1px 5px rgba(0,0,0,.2)',
 					}}
 				>
-					{chars.map((char, i) => (
+					{mentionList.map((char, i) => (
 						<div
 							key={char}
 							style={{
