@@ -7,12 +7,10 @@ import { withHistory } from 'slate-history'
 
 import { withLinks, makeLink } from 'util/linkHelpers'
 import { toggleBoldMark } from 'util/boldHelpers'
-import { toggleCodeBlock } from 'util/codeHelpers'
 import fakeData from 'constants/fakeData'
 import mentions from 'constants/mentions'
 
 import Leaf from 'components/Leaf'
-import CodeElement from 'components/CodeElement'
 import LinkElement from 'components/LinkElement'
 import TextElement from 'components/TextElement'
 import FormattingButton from 'components/FormattingButton'
