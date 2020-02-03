@@ -3,7 +3,9 @@ import prop from 'ramda/src/prop'
 import { wrapLink } from 'util/linkHelpers'
 
 export const withEditorMods = (editor) => {
-	const { insertData, insertText, isInline } = editor
+	const {
+		insertData, insertText, isInline, isVoid,
+	} = editor
 
 	editor.isInline = (element) => {
 		switch (prop('type', element)) {
@@ -14,6 +16,8 @@ export const withEditorMods = (editor) => {
 				return isInline(element)
 		}
 	}
+
+	editor.isVoid = (element) => (prop('type', element) === 'mention' ? true : isVoid(element))
 
 	editor.insertText = (text) => {
 		if (text && isUrl(text)) {
