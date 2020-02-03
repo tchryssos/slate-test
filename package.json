@@ -46,6 +46,7 @@
     "react-jss": "^10.0.3",
     "react-router-dom": "^5.0.0",
     "slate": "^0.57.1",
+    "slate-history": "^0.57.1",
     "slate-react": "^0.57.1",
     "style-loader": "^1.1.2",
     "url-loader": "^0.6.2",
